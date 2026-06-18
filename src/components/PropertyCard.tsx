@@ -1,6 +1,7 @@
 import React from 'react';
-import { MapPin, Phone, MessageCircle, Maximize, BedDouble } from 'lucide-react';
+import { MapPin, Phone, Expand, Bed, MessageCircle } from 'lucide-react';
 import { Property, Realtor } from '../types';
+import { motion } from 'motion/react';
 
 type PropertyCardProps = {
   key?: React.Key;
@@ -16,90 +17,101 @@ export function PropertyCard({ property, realtor, onDelete, isOwner }: PropertyC
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow duration-300">
-      <div className="relative h-64 overflow-hidden group">
+    <motion.div 
+      whileHover={{ y: -4 }}
+      className="group flex flex-col h-full bg-white rounded-[2rem] overflow-hidden shadow-[0_2px_20px_-4px_rgba(0,0,0,0.04)] border border-slate-100 hover:shadow-[0_12px_40px_-8px_rgba(0,0,0,0.12)] transition-all duration-300"
+    >
+      <div className="relative h-64 sm:h-72 w-full overflow-hidden shrink-0">
+        <div className="absolute inset-0 bg-slate-100 animate-pulse"></div>
         <img 
-          src={property.imageUrl || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&q=80&w=800'} 
+          src={property.imageUrl} 
           alt={property.title} 
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          className="relative w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          loading="lazy"
         />
-        <div className="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-semibold text-gray-800">
-          {property.type}
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent"></div>
+        
+        <div className="absolute top-5 left-5 flex gap-2">
+          <span className="bg-white/95 backdrop-blur-md px-4 py-1.5 rounded-full text-xs font-bold tracking-wide text-slate-900 shadow-sm uppercase">
+            {property.type}
+          </span>
         </div>
+
         {isOwner && onDelete && (
           <button 
-            onClick={() => onDelete(property.id)}
-            className="absolute top-4 right-4 bg-red-500/90 text-white backdrop-blur px-3 py-1 rounded-full text-xs font-semibold hover:bg-red-600 transition-colors"
+            onClick={(e) => { e.stopPropagation(); onDelete(property.id); }}
+            className="absolute top-5 right-5 bg-red-500/90 backdrop-blur-md text-white px-4 py-1.5 rounded-full text-xs font-bold hover:bg-red-600 transition-colors shadow-sm"
           >
             Удалить
           </button>
         )}
-      </div>
 
-      <div className="p-6">
-        <div className="flex justify-between items-start mb-2">
-          <h3 className="text-xl font-bold text-gray-900 line-clamp-2">{property.title}</h3>
-          <div className="text-xl font-bold text-blue-600 whitespace-nowrap ml-4">
+        <div className="absolute bottom-5 left-5 right-5 flex justify-between items-end">
+          <div className="text-white font-serif text-3xl sm:text-4xl font-bold tracking-tight drop-shadow-md">
             {formatPrice(property.price)}
           </div>
         </div>
+      </div>
 
-        <div className="flex items-center text-gray-500 text-sm mb-4">
-          <MapPin className="w-4 h-4 mr-1 flex-shrink-0" />
-          <span className="truncate">{property.address}</span>
+      <div className="p-6 sm:p-8 flex flex-col flex-1">
+        <h3 className="text-xl sm:text-2xl font-serif font-semibold text-slate-900 line-clamp-2 leading-tight mb-4">
+          {property.title}
+        </h3>
+
+        <div className="flex items-start gap-2.5 text-slate-500 text-sm font-medium mb-6">
+          <MapPin className="w-4 h-4 shrink-0 mt-0.5 text-slate-400" />
+          <span className="line-clamp-2 leading-relaxed">{property.address}</span>
         </div>
 
-        <div className="flex items-center gap-4 text-sm text-gray-600 mb-4 pb-4 border-b border-gray-100">
-          <div className="flex items-center gap-1">
-            <Maximize className="w-4 h-4 text-gray-400" />
+        <div className="flex items-center gap-6 text-sm text-slate-600 font-semibold mb-6 pb-6 border-b border-slate-100 mt-auto">
+          <div className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
+            <Expand className="w-4 h-4 text-slate-400 shrink-0" />
             <span>{property.area} м²</span>
           </div>
           {property.rooms && (
-            <div className="flex items-center gap-1">
-              <BedDouble className="w-4 h-4 text-gray-400" />
+            <div className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
+              <Bed className="w-4 h-4 text-slate-400 shrink-0" />
               <span>{property.rooms} комн.</span>
             </div>
           )}
         </div>
 
-        <p className="text-gray-600 text-sm line-clamp-3 mb-6">
-          {property.description}
-        </p>
-
-        {realtor && (
-          <div className="bg-gray-50 rounded-xl p-4 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold">
-                {realtor.name.charAt(0)}
+        <div>
+          {realtor ? (
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-11 h-11 rounded-full bg-slate-900 flex items-center justify-center text-white font-bold text-sm shrink-0 shadow-sm">
+                  {realtor.name.charAt(0)}
+                </div>
+                <div className="overflow-hidden">
+                  <p className="text-sm font-bold text-slate-900 truncate">{realtor.name}</p>
+                  <p className="text-xs text-slate-500 font-semibold truncate">Брокер • ID: {realtor.id.slice(-4)}</p>
+                </div>
               </div>
-              <div>
-                <p className="text-sm font-semibold text-gray-900">{realtor.name}</p>
-                <p className="text-xs text-gray-500">Риэлтор</p>
-              </div>
-            </div>
-            <div className="flex gap-2">
-              <a 
-                href={`tel:${realtor.phone}`} 
-                className="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-600 hover:text-blue-600 hover:border-blue-600 transition-colors"
-                title="Позвонить"
-              >
-                <Phone className="w-4 h-4" />
-              </a>
-              {realtor.telegram && (
+              <div className="flex gap-2 shrink-0 ml-2">
+                {realtor.telegram && (
+                  <a 
+                    href={`https://t.me/${realtor.telegram.replace('@', '')}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-11 h-11 rounded-full bg-[#E5F1FB] text-[#0088CC] flex items-center justify-center hover:bg-[#D5EAF8] transition-colors"
+                  >
+                    <MessageCircle className="w-5 h-5" />
+                  </a>
+                )}
                 <a 
-                  href={`https://t.me/${realtor.telegram.replace('@', '')}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-600 hover:text-blue-500 hover:border-blue-500 transition-colors"
-                  title="Написать в Telegram"
+                  href={`tel:${realtor.phone}`} 
+                  className="w-11 h-11 rounded-full bg-slate-50 text-slate-700 border border-slate-200 flex items-center justify-center hover:bg-slate-100 hover:text-slate-900 transition-colors shadow-sm"
                 >
-                  <MessageCircle className="w-4 h-4" />
+                  <Phone className="w-5 h-5" />
                 </a>
-              )}
+              </div>
             </div>
-          </div>
-        )}
+          ) : (
+             <div className="h-11"></div>
+          )}
+        </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
