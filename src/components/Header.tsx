@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, LogIn, UserPlus } from 'lucide-react';
+import { Building2, LogIn, User, LogOut, Grid } from 'lucide-react';
 import { Realtor } from '../types';
 
 type HeaderProps = {
@@ -11,49 +11,62 @@ type HeaderProps = {
 
 export function Header({ currentView, setCurrentView, currentUser, onLogout }: HeaderProps) {
   return (
-    <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
+    <header className="bg-white/80 backdrop-blur-md border-b border-slate-100 sticky top-0 z-50 transition-all">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-between items-center h-16 sm:h-20">
           <div 
-            className="flex items-center gap-2 cursor-pointer"
+            className="flex items-center gap-2 sm:gap-3 cursor-pointer group"
             onClick={() => setCurrentView('home')}
           >
-            <Home className="w-6 h-6 text-blue-600" />
-            <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
-              ВЛАДИС ПРО
-            </span>
+            <div className="w-9 h-9 sm:w-11 sm:h-11 bg-slate-900 text-white rounded-xl flex items-center justify-center group-hover:bg-slate-800 transition-colors shadow-sm">
+              <Building2 className="w-5 h-5 sm:w-6 sm:h-6" />
+            </div>
+            <div className="flex flex-col">
+              <span className="text-xl sm:text-2xl font-serif font-bold text-slate-900 tracking-tight leading-none uppercase">
+                Vladis<span className="text-slate-400 font-sans font-medium text-[0.8em]">Pro</span>
+              </span>
+              <span className="text-[10px] sm:text-xs text-slate-500 font-medium tracking-widest uppercase hidden xs:block mt-0.5">
+                Premium Real Estate
+              </span>
+            </div>
           </div>
 
-          <nav className="flex items-center gap-4">
+          <nav className="flex items-center gap-2 sm:gap-6">
             <button 
               onClick={() => setCurrentView('home')}
-              className={`text-sm font-medium transition-colors ${currentView === 'home' ? 'text-blue-600' : 'text-gray-600 hover:text-gray-900'}`}
+              className={`flex items-center gap-2 text-sm sm:text-base font-semibold transition-all px-3 py-2 rounded-lg ${currentView === 'home' ? 'text-slate-900 bg-slate-50' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'}`}
             >
-              Все объекты
+              <Grid className="w-4 h-4 sm:hidden" />
+              <span className="hidden sm:inline">Каталог</span>
             </button>
-            <div className="w-px h-6 bg-gray-200"></div>
+            
+            <div className="w-px h-6 bg-slate-200 hidden sm:block"></div>
+            
             {currentUser ? (
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2 sm:gap-4">
                 <button
                   onClick={() => setCurrentView('dashboard')}
-                  className={`text-sm font-medium transition-colors ${currentView === 'dashboard' ? 'text-blue-600' : 'text-gray-600 hover:text-gray-900'}`}
+                  className={`flex items-center gap-2 text-sm sm:text-base font-semibold transition-all px-3 py-2 rounded-lg ${currentView === 'dashboard' ? 'text-slate-900 bg-slate-50' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'}`}
                 >
-                  Личный кабинет ({currentUser.name})
+                  <User className="w-4 h-4 sm:hidden" />
+                  <span className="hidden sm:inline">Кабинет ({currentUser.name.split(' ')[0]})</span>
                 </button>
                 <button
                   onClick={onLogout}
-                  className="text-sm font-medium text-red-600 hover:text-red-700 transition-colors"
+                  className="flex items-center gap-2 text-sm font-semibold text-red-500 hover:text-red-600 transition-all p-2 sm:px-3 rounded-lg hover:bg-red-50"
+                  title="Выйти"
                 >
-                  Выйти
+                  <LogOut className="w-4 h-4 sm:hidden" />
+                  <span className="hidden sm:inline">Выйти</span>
                 </button>
               </div>
             ) : (
               <button
                 onClick={() => setCurrentView('dashboard')}
-                className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
+                className="flex items-center gap-2 bg-slate-900 text-white px-4 py-2 sm:px-6 sm:py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-800 transition-all shadow-sm active:scale-95"
               >
                 <LogIn className="w-4 h-4" />
-                Вход для риэлторов
+                <span className="hidden sm:inline">Вход для риэлторов</span>
               </button>
             )}
           </nav>
